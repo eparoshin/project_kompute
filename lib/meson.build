@@ -1,5 +1,5 @@
 lib_kompute_sources = files([
-    'vector_operations.cpp',
+    'vector_operation.cpp',
 ])
 
 lib_kompute = static_library('lib_kompute', lib_kompute_sources, dependencies : [kompute_dep])

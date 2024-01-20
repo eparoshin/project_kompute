@@ -1,5 +1,3 @@
 #include <lib/test.h>
 
-int main() {
-    func();
-}
+int main() { func(); }
