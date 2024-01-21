@@ -1,7 +1,6 @@
 #include "kompute_device.h"
 
 #include <algorithm>
-
 #include <kompute/Manager.hpp>
 #include <kompute/operations/OpTensorSyncDevice.hpp>
 #include <kompute/operations/OpTensorSyncLocal.hpp>
@@ -17,9 +16,7 @@ std::vector<TDataType> convert(const TVectorD& from) {
 
 }  // namespace
 
-TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {
-}
-
+TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {}
 
 bool TKomputeDevice::IsAvaliable() const { return Manager != nullptr; }
 
@@ -38,33 +35,27 @@ void TKomputeDevice::FillPlots(const TVectorD& samples, const TVectorD& x,
         TPlotComputeFunction::CreateComputeFunction<TNormal<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D0Y0),
+            Manager->algorithm(), D0Y0),
         TPlotComputeFunction::CreateComputeFunction<TNormal<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D1Y0),
+            Manager->algorithm(), D1Y0),
         TPlotComputeFunction::CreateComputeFunction<TMaxwellBoltzmann<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D0Y1),
+            Manager->algorithm(), D0Y1),
         TPlotComputeFunction::CreateComputeFunction<TMaxwellBoltzmann<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D1Y1),
+            Manager->algorithm(), D1Y1),
         TPlotComputeFunction::CreateComputeFunction<TRayleigh<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D0Y2),
+            Manager->algorithm(), D0Y2),
         TPlotComputeFunction::CreateComputeFunction<TRayleigh<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<TDataType>(xSize)),
-            Manager->algorithm(),
-            D1Y2),
+            Manager->algorithm(), D1Y2),
     };
 
     ComputeAsync(samplesTensor, xTensor, functions);
@@ -76,25 +67,31 @@ size_t TKomputeDevice::nextSeqIdx(size_t idx) const {
 
 void TKomputeDevice::FillOutData(const TComputeFunctionsVec& computeFunctions) {
     TTensorsVec outTensors(computeFunctions.size());
-    std::transform(computeFunctions.begin(), computeFunctions.end(), outTensors.size(), [](std::shared_ptr<TPlotComputeFunction> func) { return func->GetOutTensor(); });
+    std::transform(computeFunctions.begin(), computeFunctions.end(),
+                   outTensors.size(),
+                   [](std::shared_ptr<TPlotComputeFunction> func) {
+                       return func->GetOutTensor();
+                   });
     DefaultSequence->eval<kp::OpTensorSyncLocal>(outTensors);
 
-    std::for_each(computeFunctions.begin(), computeFunctions.end(), [](auto function) { function->FillOutVec(); });
+    std::for_each(computeFunctions.begin(), computeFunctions.end(),
+                  [](auto function) { function->FillOutVec(); });
 }
-
 
 void TKomputeDevice::ComputeAsync(
     TTensorPtr samples, TTensorPtr x,
     const TComputeFunctionsVec& computeFunctions) {
     DefaultSequence->eval<kp::OpTensorSyncDevice>({samples, x});
-    //TODO rewrite
+    // TODO rewrite
     for (size_t i = 0, j = 0; i < computeFunctions.size();
          ++i, j = nextSeqIdx(j)) {
         Sequences[j]->record(computeFunctions[i]);
     }
 
-    std::for_each(Sequences.begin(), Sequences.end(), [](auto seq) { seq->evalAsync(); });
-    std::for_each(Sequences.begin(), Sequences.end(), [](auto seq) { seq->evalAwait(); });
+    std::for_each(Sequences.begin(), Sequences.end(),
+                  [](auto seq) { seq->evalAsync(); });
+    std::for_each(Sequences.begin(), Sequences.end(),
+                  [](auto seq) { seq->evalAwait(); });
 
     FillOutData(computeFunctions);
 }

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "compute_function.h"
-
 #include <memory>
 #include <vector>
+
+#include "compute_function.h"
 
 namespace kp {
 class Manager;
@@ -45,10 +45,10 @@ class TKomputeDevice {
 
     static TSequences GetSequences(KomputeManagerPtr manager);
 
-
     KomputeManagerHolder Manager = GetKomputeManager();
     const TSequences Sequences = GetSequences(Manager.get());
     const size_t SequencesSize = Sequences.size();
-    TSequencePtr DefaultSequence = Sequences.empty() ? nullptr : Sequences.front();
+    TSequencePtr DefaultSequence =
+        Sequences.empty() ? nullptr : Sequences.front();
 };
 }  // namespace NKomputeDevice
