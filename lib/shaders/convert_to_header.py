@@ -8,7 +8,6 @@ outfile = sys.argv[2]
 with open(infile, "rb") as input:
     bytes_data = input.read()
 
-bytes_data += b'\x00' * (4 - len(bytes_data) % 4)
 uint32_data = [struct.unpack('I', bytes_data[i:i+4])[0] for i in range(0, len(bytes_data), 4)]
 
 with open(outfile, "w") as output:

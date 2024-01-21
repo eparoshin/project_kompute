@@ -18,7 +18,7 @@ std::vector<TDataType> convert(const TVectorD& from) {
 
 // TODO choose and init device from vulkan_helpers
 TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {
-    return std::make_unique<kp::Manager>();
+    return std::make_unique<kp::Manager>(1);
 }
 
 // TODO allocate more sequences if avaliable
@@ -40,7 +40,7 @@ void TKomputeDevice::FillPlots(const TVectorD& samples, const TVectorD& x,
 
     const size_t xSize = x.size();
     auto samplesTensor = Manager->tensorT(convert(samples));
-    auto xTensor = Manager->tensorT(convert(samples));
+    auto xTensor = Manager->tensorT(convert(x));
 
     using namespace NComputeFunctions;
 
