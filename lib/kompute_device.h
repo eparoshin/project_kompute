@@ -1,6 +1,6 @@
 #pragma once
 
-#include <compute_function.h>
+#include "compute_function.h"
 
 #include <memory>
 #include <vector>
@@ -23,11 +23,10 @@ class TKomputeDevice {
     using TTensorsVec = NComputeFunctions::TTensorsVec;
     using TComputeFunctionsVec =
         std::vector<std::shared_ptr<TPlotComputeFunction>>;
-    using KomputeManagerPtr = std::unique_ptr<kp::Manager>;
+    using KomputeManagerHolder = std::unique_ptr<kp::Manager>;
+    using KomputeManagerPtr = kp::Manager*;
 
    public:
-    TKomputeDevice();
-
     bool IsAvaliable() const;
 
     void FillPlots(const TVectorD& samples, const TVectorD& x, TVectorD* D0Y0,
@@ -38,11 +37,18 @@ class TKomputeDevice {
     void ComputeAsync(TTensorPtr samples, TTensorPtr x,
                       const TComputeFunctionsVec& computeFunctions);
 
+    void FillOutData(const TComputeFunctionsVec& computeFunctions);
+
     size_t nextSeqIdx(size_t idx) const;
 
-    KomputeManagerPtr Manager;
-    const TSequences Sequences;
-    const size_t SequencesSize;
-    TSequencePtr DefaultSequence;
+    static KomputeManagerHolder GetKomputeManager();
+
+    static TSequences GetSequences(KomputeManagerPtr manager);
+
+
+    KomputeManagerHolder Manager = GetKomputeManager();
+    const TSequences Sequences = GetSequences(Manager.get());
+    const size_t SequencesSize = Sequences.size();
+    TSequencePtr DefaultSequence = Sequences.empty() ? nullptr : Sequences.front();
 };
 }  // namespace NKomputeDevice
