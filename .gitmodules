@@ -1,0 +1,4 @@
+[submodule "subprojects/kompute"]
+	path = subprojects/kompute
+	url = https://github.com/eparoshin/kompute.git
+	branch = cleanup_code
