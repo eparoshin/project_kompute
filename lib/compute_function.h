@@ -46,8 +46,8 @@ class TPlotComputeFunction : public kp::OpAlgoDispatch {
         TTensorPtr means, TTensorPtr args, TTensorPtr out,
         TAlgorithmPtr algorithm, TVectorD* outVec) {
         return std::make_shared<TPlotComputeFunction>(
-            std::move(means), std::move(args), std::move(out), std::move(algorithm),
-            TSpirvGetter::Get, outVec);
+            std::move(means), std::move(args), std::move(out),
+            std::move(algorithm), TSpirvGetter::Get, outVec);
     }
     TTensorPtr GetOutTensor() { return OutTensor; }
 
