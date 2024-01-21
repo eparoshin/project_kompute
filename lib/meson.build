@@ -1,8 +1,8 @@
-lib_kompute_sources = files([
-    'vector_operation.cpp',
+lib_compute_sources = files([
+    'kompute_device.cpp',
 ])
 
-lib_kompute = static_library('lib_kompute', lib_kompute_sources, dependencies : [kompute_dep])
+lib_compute = static_library('lib_compute', lib_compute_sources, dependencies : [libkompute_dep])
 
 # Declare a dependency object for this library
-lib_kompute_dep = declare_dependency(link_with : lib_kompute)
+lib_compute_dep = declare_dependency(link_with : lib_compute)

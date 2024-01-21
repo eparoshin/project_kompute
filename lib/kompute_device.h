@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "compute_function.h"
+#include <kompute/Manager.hpp>
 
 namespace kp {
 class Manager;

@@ -1,3 +1,5 @@
-#include <lib/test.h>
+#include "lib/kompute_device.h"
 
-int main() { func(); }
+int main() {
+    NKomputeDevice::TKomputeDevice device;
+}

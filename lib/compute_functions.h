@@ -8,6 +8,8 @@
 
 namespace NComputeFunctions {
 
+// TODO include generated shader code
+
 template <int64_t derivative>
 struct TNormal;
 

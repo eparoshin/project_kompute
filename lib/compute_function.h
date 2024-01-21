@@ -1,14 +1,13 @@
 #pragma once
 
-#include <memory>
-#include <type_traits>
-#include <vector>
-#include <functional>
 #include <algorithm>
-
+#include <functional>
 #include <kompute/Algorithm.hpp>
 #include <kompute/Tensor.hpp>
 #include <kompute/operations/OpAlgoDispatch.hpp>
+#include <memory>
+#include <type_traits>
+#include <vector>
 
 namespace NComputeFunctions {
 using TDataType = float;
@@ -22,11 +21,11 @@ using TAlgorithmPtr = std::shared_ptr<kp::Algorithm>;
 class TPlotComputeFunction : public kp::OpAlgoDispatch {
     using TVectorD = std::vector<double>;
 
-    TPlotComputeFunction(TTensorPtr&& means, TTensorPtr&& args, TTensorPtr&& out,
-                         TAlgorithmPtr&& algorithm, TSpirvGetFunction getSpirv, TVectorD* outVec)
-        : OpAlgoDispatch(algorithm)
-        , OutTensor(out)
-        , OutVec(outVec) {
+   public:
+    TPlotComputeFunction(TTensorPtr&& means, TTensorPtr&& args,
+                         TTensorPtr&& out, TAlgorithmPtr&& algorithm,
+                         TSpirvGetFunction getSpirv, TVectorD* outVec)
+        : OpAlgoDispatch(algorithm), OutTensor(out), OutVec(outVec) {
         assert(dynamic_cast<kp::TensorT<TDataType>*>(means.get()) &&
                "means tensor has incorrect type");
         assert(dynamic_cast<kp::TensorT<TDataType>*>(args.get()) &&
@@ -38,18 +37,19 @@ class TPlotComputeFunction : public kp::OpAlgoDispatch {
         assert(outVec);
         assert(outVec->size() == args->size() && "out vector wrong size");
 
-        algorithm->rebuild<>({means, args, out}, getSpirv());
+        algorithm->rebuild<>({means, args, out}, getSpirv(),
+                             kp::Workgroup({args->size(), 1, 1}));
     }
 
-   public:
     template <typename TSpirvGetter>
-    static std::shared_ptr<TPlotComputeFunction> CreateComputeFunction(TTensorPtr means, TTensorPtr args, TTensorPtr out,
-                         TAlgorithmPtr algorithm, TVectorD* outVec) {
-        return std::make_shared<TPlotComputeFunction>(std::move(means), std::move(args), std::move(out), algorithm, TSpirvGetter::Get, outVec);
+    static std::shared_ptr<TPlotComputeFunction> CreateComputeFunction(
+        TTensorPtr means, TTensorPtr args, TTensorPtr out,
+        TAlgorithmPtr algorithm, TVectorD* outVec) {
+        return std::make_shared<TPlotComputeFunction>(
+            std::move(means), std::move(args), std::move(out), std::move(algorithm),
+            TSpirvGetter::Get, outVec);
     }
-    TTensorPtr GetOutTensor() {
-        return OutTensor;
-    }
+    TTensorPtr GetOutTensor() { return OutTensor; }
 
     void FillOutVec() {
         auto* fromBegin = OutTensor->data<TDataType>();
@@ -61,4 +61,4 @@ class TPlotComputeFunction : public kp::OpAlgoDispatch {
     TTensorPtr OutTensor;
     TVectorD* OutVec;
 };
-}
+}  // namespace NComputeFunctions

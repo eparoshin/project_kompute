@@ -16,7 +16,20 @@ std::vector<TDataType> convert(const TVectorD& from) {
 
 }  // namespace
 
-TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {}
+// TODO choose and init device from vulkan_helpers
+TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {
+    return std::make_unique<kp::Manager>();
+}
+
+// TODO allocate more sequences if avaliable
+TKomputeDevice::TSequences TKomputeDevice::GetSequences(
+    TKomputeDevice::KomputeManagerPtr manager) {
+    if (manager) {
+        return {manager->sequence()};
+    } else {
+        return {};
+    }
+}
 
 bool TKomputeDevice::IsAvaliable() const { return Manager != nullptr; }
 
@@ -68,7 +81,7 @@ size_t TKomputeDevice::nextSeqIdx(size_t idx) const {
 void TKomputeDevice::FillOutData(const TComputeFunctionsVec& computeFunctions) {
     TTensorsVec outTensors(computeFunctions.size());
     std::transform(computeFunctions.begin(), computeFunctions.end(),
-                   outTensors.size(),
+                   outTensors.begin(),
                    [](std::shared_ptr<TPlotComputeFunction> func) {
                        return func->GetOutTensor();
                    });
