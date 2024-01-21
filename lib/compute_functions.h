@@ -1,44 +1,74 @@
 #pragma once
 
-#include <kompute/Algorithm.hpp>
-#include <kompute/Tensor.hpp>
-#include <kompute/operations/OpAlgoDispatch.hpp>
-#include <memory>
-#include <type_traits>
 #include <vector>
+#include <functional>
+#include <memory>
+
+#include "compute_function.h"
 
 namespace NComputeFunctions {
-using TDataType = float;
-using TTensorPtr = std::shared_ptr<kp::Tensor>;
-using TSpirvProgramm = std::vector<uint32_t>;
-using TTensorsVec = std::vector<TTensorPtr>;
-using TAlgorithmPtr = std::shared_ptr<kp::Algorithm>;
 
-template <typename TSprivGetter>
-class TPlotComputeFunction : public kp::OpAlgoDispatch {
-   public:
-    TPlotComputeFunction(TTensorPtr means, TTensorPtr args, TTensorPtr out,
-                         TAlgorithmPtr algorithm)
-        : OpAlgoDispatch(algorithm) {
-        assert(dynamic_cast<kp::TensorT<TDataType>*>(means.get()) &&
-               "means tensor has incorrect type");
-        assert(dynamic_cast<kp::TensorT<TDataType>*>(args.get()) &&
-               "args tensor has incorrect type");
-        assert(dynamic_cast<kp::TensorT<TDataType>*>(out.get()) &&
-               "out tensor has incorrect type");
+template <int64_t derivative>
+struct TNormal;
 
-        assert(args->size() == out->size() && "sizes mismatch");
+template <>
+struct TNormal<0> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
 
-        algorithm->rebuild<>({means, args, out}, TSprivGetter());
+template <>
+struct TNormal<1> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
+
+template <>
+struct TNormal<2> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
     }
 };
 
 template <int64_t derivative>
-TSpirvProgramm TNormalSprivGetter();
+struct TMaxwellBoltzmann;
+
+template <>
+struct TMaxwellBoltzmann<0> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
+
+template <>
+struct TMaxwellBoltzmann<1> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
 
 template <int64_t derivative>
-TSpirvProgramm TMaxwellBoltzmannSprivGetter();
+struct TRayleigh;
+template <>
+struct TRayleigh<0> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
 
-template <int64_t derivative>
-TSpirvProgramm TRayleighSprivGetter();
+template <>
+struct TRayleigh<1> {
+    static TSpirvProgrammConstRef Get() {
+        const static TSpirvProgramm programm = {};
+        return programm;
+    }
+};
 }  // namespace NComputeFunctions
