@@ -18,7 +18,7 @@ std::vector<TDataType> convert(const TVectorD& from) {
 
 // TODO choose and init device from vulkan_helpers
 TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {
-    return std::make_unique<kp::Manager>(1);
+    return std::make_unique<kp::Manager>(0);
 }
 
 // TODO allocate more sequences if avaliable
