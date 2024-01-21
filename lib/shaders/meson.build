@@ -1,5 +1,7 @@
+python_module = import('python')
+
 shaderc = find_program('glslangValidator')
-python = find_program('python3')
+python = python_module.find_installation('python3')
 convert_to_header = files('convert_to_header.py')
 
 # convert_to_header = find_program('convert_to_header')
