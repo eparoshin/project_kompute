@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys
 import struct
 from pathlib import Path

@@ -1,6 +1,6 @@
 requirements:
 
-python
+python3
 
 meson
 

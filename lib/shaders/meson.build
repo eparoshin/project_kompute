@@ -1,5 +1,8 @@
 shaderc = find_program('glslangValidator')
-convert_to_header = find_program('convert_to_header')
+python = find_program('python3')
+convert_to_header = files('convert_to_header.py')
+
+# convert_to_header = find_program('convert_to_header')
 
 comp_files = [
     'NormalDerivative0.comp',
@@ -28,7 +31,7 @@ foreach comp_file : comp_files
         comp_file + '_hpp',
         input : sprv_target,
         output : hpp_file,
-        command : [convert_to_header, '@INPUT@', '@OUTPUT@']
+        command : [python, convert_to_header, '@INPUT@', '@OUTPUT@']
     )
 
     generated_hpp_files += hpp_target
