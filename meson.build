@@ -12,5 +12,6 @@ libkompute_dep_logger = libkompute_subproj.dependency('kp_logger')
 
 subdir('lib')
 
-executable('kompute_exe', 'bin/main.cpp', dependencies : [lib_compute_dep, libkompute_dep, libkompute_dep_fmt, libkompute_dep_logger])
+test1 = executable('test1', 'test/test.cpp', dependencies : [lib_compute_dep, libkompute_dep, libkompute_dep_fmt, libkompute_dep_logger])
 
+test('test1', test1)
