@@ -24,15 +24,20 @@ float deviation (in float mean) {
 
 void main() {
     uint index = gl_GlobalInvocationID.x;
-    float mean = dataMeans[index];
-    float arg = dataArgs[index];
-    float Deviation = deviation(mean);
-    float one_over_div = 1. / Deviation;
-    float arg_minus_mean = arg - mean;
+    uint meansLength = dataMeans.length();
+    for (uint meansIdx = 0; meansIdx < meansLength; ++meansIdx) {
+        float mean = dataMeans[meansIdx];
+        float arg = dataArgs[index];
+        float Deviation = deviation(mean);
+        float one_over_div = 1. / Deviation;
+        float arg_minus_mean = arg - mean;
 
-    dataOut[index] = exp(-0.5 * arg_minus_mean * arg_minus_mean * one_over_div *
-               one_over_div) *
-           one_over_sqrt_two_pi * one_over_div * one_over_div * one_over_div *
-           (1. - arg_minus_mean * arg_minus_mean * one_over_div * one_over_div);
+        dataOut[index] += exp(-0.5 * arg_minus_mean * arg_minus_mean * one_over_div *
+                   one_over_div) *
+               one_over_sqrt_two_pi * one_over_div * one_over_div * one_over_div *
+               (1. - arg_minus_mean * arg_minus_mean * one_over_div * one_over_div);
+    }
+
+    dataOut[index] /= float(meansLength);
 }
 
