@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace kp {
-    class Manager;
+class Manager;
 }
 
 namespace NKomputeManager {
@@ -13,18 +13,17 @@ class TKomputeManager {
     using TVectorD = std::vector<double>;
 
    public:
-       TKomputeManager();
+    TKomputeManager();
 
-       bool IsGpuAvaliable() const;
+    bool IsGpuAvaliable() const;
 
-       void FillPlots(const TVectorD& Samples, const TVectorD& X, TVectorD* D0Y0,
-                    TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
-                    TVectorD* D0Y2, TVectorD* D1Y2);
+    void FillPlots(const TVectorD& Samples, const TVectorD& X, TVectorD* D0Y0,
+                   TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
+                   TVectorD* D0Y2, TVectorD* D1Y2);
 
    private:
-       TManagerPtr Manager;
-       struct TDeviceInfo {
-       };
-       TDeviceInfo DeviceInfo;
+    TManagerPtr Manager;
+    struct TDeviceInfo {};
+    TDeviceInfo DeviceInfo;
 };
-}
+}  // namespace NKomputeManager

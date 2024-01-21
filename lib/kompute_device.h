@@ -1,15 +1,15 @@
 #pragma once
 
+#include <compute_function.h>
+
 #include <memory>
 #include <vector>
 
-#include <compute_function.h>
-
 namespace kp {
-    class Manager;
-    class Sequence;
-    class Tensor;
-}
+class Manager;
+class Sequence;
+class Tensor;
+}  // namespace kp
 
 namespace NKomputeDevice {
 using NComputeFunctions::TPlotComputeFunction;
@@ -21,7 +21,8 @@ class TKomputeDevice {
     using TSequences = std::vector<TSequencePtr>;
     using TTensorPtr = NComputeFunctions::TTensorPtr;
     using TTensorsVec = NComputeFunctions::TTensorsVec;
-    using TComputeFunctionsVec = std::vector<std::shared_ptr<TPlotComputeFunction>>;
+    using TComputeFunctionsVec =
+        std::vector<std::shared_ptr<TPlotComputeFunction>>;
     using KomputeManagerPtr = std::unique_ptr<kp::Manager>;
 
    public:
@@ -30,12 +31,12 @@ class TKomputeDevice {
     bool IsAvaliable() const;
 
     void FillPlots(const TVectorD& samples, const TVectorD& x, TVectorD* D0Y0,
-                    TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
-                    TVectorD* D0Y2, TVectorD* D1Y2);
-
+                   TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
+                   TVectorD* D0Y2, TVectorD* D1Y2);
 
    private:
-    void ComputeAsync(TTensorPtr samples, TTensorPtr x, const TComputeFunctionsVec& computeFunctions);
+    void ComputeAsync(TTensorPtr samples, TTensorPtr x,
+                      const TComputeFunctionsVec& computeFunctions);
 
     size_t nextSeqIdx(size_t idx) const;
 
@@ -44,4 +45,4 @@ class TKomputeDevice {
     const size_t SequencesSize;
     TSequencePtr DefaultSequence;
 };
-}
+}  // namespace NKomputeDevice
