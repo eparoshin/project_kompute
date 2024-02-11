@@ -21,8 +21,6 @@ TKomputeManager TKomputeDevice::GetKomputeManager() {
     return TKomputeManager();
 }
 
-bool TKomputeDevice::IsAvaliable() const { return Manager.IsAvaliable(); }
-
 void TKomputeDevice::FillPlots(const TVectorD& samples, const TVectorD& x,
                                TVectorD* D0Y0, TVectorD* D1Y0, TVectorD* D0Y1,
                                TVectorD* D1Y1, TVectorD* D0Y2, TVectorD* D1Y2) {

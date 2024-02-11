@@ -29,7 +29,9 @@ class TKomputeDevice {
     using KomputeManagerPtr = TKomputeManager*;
 
    public:
-    bool IsAvaliable() const noexcept;
+    bool IsAvaliable() const noexcept {
+        return Manager.IsAvaliable();
+    }
 
     void FillPlots(const TVectorD& samples, const TVectorD& x, TVectorD* D0Y0,
                    TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
