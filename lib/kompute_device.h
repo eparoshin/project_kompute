@@ -1,9 +1,9 @@
 #pragma once
 
-#include <kompute/Manager.hpp>
 #include <memory>
 #include <vector>
 
+#include "kompute_manager.h"
 #include "compute_function.h"
 
 namespace kp {
@@ -15,6 +15,7 @@ class Tensor;
 namespace NKomputeDevice {
 using NComputeFunctions::TPlotComputeFunction;
 using TVectorD = std::vector<double>;
+using NKomputeManager::TKomputeManager;
 
 class TKomputeDevice {
     using TManagerPtr = std::unique_ptr<kp::Manager>;
@@ -24,11 +25,11 @@ class TKomputeDevice {
     using TTensorsVec = NComputeFunctions::TTensorsVec;
     using TComputeFunctionsVec =
         std::vector<std::shared_ptr<TPlotComputeFunction>>;
-    using KomputeManagerHolder = std::unique_ptr<kp::Manager>;
-    using KomputeManagerPtr = kp::Manager*;
+    using KomputeManagerHolder = std::unique_ptr<TKomputeManager>;
+    using KomputeManagerPtr = TKomputeManager*;
 
    public:
-    bool IsAvaliable() const;
+    bool IsAvaliable() const noexcept;
 
     void FillPlots(const TVectorD& samples, const TVectorD& x, TVectorD* D0Y0,
                    TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
@@ -42,12 +43,10 @@ class TKomputeDevice {
 
     size_t nextSeqIdx(size_t idx) const;
 
-    static KomputeManagerHolder GetKomputeManager();
+    static TKomputeManager GetKomputeManager();
 
-    static TSequences GetSequences(KomputeManagerPtr manager);
-
-    KomputeManagerHolder Manager = GetKomputeManager();
-    const TSequences Sequences = GetSequences(Manager.get());
+    TKomputeManager Manager = GetKomputeManager();
+    const TSequences Sequences = Manager.GetComputeSequences();
     const size_t SequencesSize = Sequences.size();
     TSequencePtr DefaultSequence =
         Sequences.empty() ? nullptr : Sequences.front();

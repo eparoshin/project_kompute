@@ -1,5 +1,6 @@
 lib_compute_sources = files([
     'kompute_device.cpp',
+    'kompute_manager.cpp',
 ])
 
 shader_dir = 'shaders'

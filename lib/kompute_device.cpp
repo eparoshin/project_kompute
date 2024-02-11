@@ -17,21 +17,11 @@ std::vector<TDataType> convert(const TVectorD& from) {
 }  // namespace
 
 // TODO choose and init device from vulkan_helpers
-TKomputeDevice::KomputeManagerHolder TKomputeDevice::GetKomputeManager() {
-    return std::make_unique<kp::Manager>(0);
+TKomputeManager TKomputeDevice::GetKomputeManager() {
+    return TKomputeManager();
 }
 
-// TODO allocate more sequences if avaliable
-TKomputeDevice::TSequences TKomputeDevice::GetSequences(
-    TKomputeDevice::KomputeManagerPtr manager) {
-    if (manager) {
-        return {manager->sequence()};
-    } else {
-        return {};
-    }
-}
-
-bool TKomputeDevice::IsAvaliable() const { return Manager != nullptr; }
+bool TKomputeDevice::IsAvaliable() const { return Manager.IsAvaliable(); }
 
 void TKomputeDevice::FillPlots(const TVectorD& samples, const TVectorD& x,
                                TVectorD* D0Y0, TVectorD* D1Y0, TVectorD* D0Y1,
