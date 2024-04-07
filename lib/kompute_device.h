@@ -13,44 +13,44 @@ class Tensor;
 }  // namespace kp
 
 namespace NKomputeDevice {
-using NComputeFunctions::TPlotComputeFunction;
-using TVectorD = std::vector<double>;
-using NKomputeManager::TKomputeManager;
+using NComputeFunctions::CPlotComputeFunction;
+using CVectorD = std::vector<double>;
+using NKomputeManager::CKomputeManager;
 
-class TKomputeDevice {
-    using TManagerPtr = std::unique_ptr<kp::Manager>;
-    using TSequencePtr = std::shared_ptr<kp::Sequence>;
-    using TSequences = std::vector<TSequencePtr>;
-    using TTensorPtr = NComputeFunctions::TTensorPtr;
-    using TTensorsVec = NComputeFunctions::TTensorsVec;
-    using TComputeFunctionsVec =
-        std::vector<std::shared_ptr<TPlotComputeFunction>>;
-    using KomputeManagerHolder = std::unique_ptr<TKomputeManager>;
-    using KomputeManagerPtr = TKomputeManager*;
+class CKomputeDevice {
+    using CManagerPtr = std::unique_ptr<kp::Manager>;
+    using CSequencePtr = std::shared_ptr<kp::Sequence>;
+    using CSequences = std::vector<CSequencePtr>;
+    using CTensorPtr = NComputeFunctions::CTensorPtr;
+    using CTensorsVec = NComputeFunctions::CTensorsVec;
+    using CComputeFunctionsVec =
+        std::vector<std::shared_ptr<CPlotComputeFunction>>;
+    using KomputeManagerHolder = std::unique_ptr<CKomputeManager>;
+    using KomputeManagerPtr = CKomputeManager*;
 
    public:
     bool IsAvaliable() const noexcept {
         return Manager.IsAvaliable();
     }
 
-    void FillPlots(const TVectorD& samples, const TVectorD& x, TVectorD* D0Y0,
-                   TVectorD* D1Y0, TVectorD* D0Y1, TVectorD* D1Y1,
-                   TVectorD* D0Y2, TVectorD* D1Y2);
+    void FillPlots(const CVectorD& samples, const CVectorD& x, CVectorD* D0Y0,
+                   CVectorD* D1Y0, CVectorD* D0Y1, CVectorD* D1Y1,
+                   CVectorD* D0Y2, CVectorD* D1Y2);
 
    private:
-    void ComputeAsync(TTensorPtr samples, TTensorPtr x,
-                      const TComputeFunctionsVec& computeFunctions);
+    void ComputeAsync(CTensorPtr samples, CTensorPtr x,
+                      const CComputeFunctionsVec& computeFunctions);
 
-    void FillOutData(const TComputeFunctionsVec& computeFunctions);
+    void FillOutData(const CComputeFunctionsVec& computeFunctions);
 
     size_t nextSeqIdx(size_t idx) const;
 
-    static TKomputeManager GetKomputeManager();
+    static CKomputeManager GetKomputeManager();
 
-    TKomputeManager Manager = GetKomputeManager();
-    const TSequences Sequences = Manager.GetComputeSequences();
+    CKomputeManager Manager = GetKomputeManager();
+    const CSequences Sequences = Manager.GetComputeSequences();
     const size_t SequencesSize = Sequences.size();
-    TSequencePtr DefaultSequence =
+    CSequencePtr DefaultSequence =
         Sequences.empty() ? nullptr : Sequences.front();
 };
 }  // namespace NKomputeDevice

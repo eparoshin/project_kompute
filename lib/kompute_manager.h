@@ -3,20 +3,20 @@
 #include <kompute/Manager.hpp>
 
 namespace NKomputeManager {
-class TKomputeManager {
+class CKomputeManager {
     using KomputeManagerHolder = std::unique_ptr<kp::Manager>;
     using KomputeManagerPtr = kp::Manager*;
-    using TSequencePtr = std::shared_ptr<kp::Sequence>;
-    using TSequences = std::vector<TSequencePtr>;
+    using CSequencePtr = std::shared_ptr<kp::Sequence>;
+    using CSequences = std::vector<CSequencePtr>;
 
 public:
-    explicit TKomputeManager();
+    explicit CKomputeManager();
 
     bool IsAvaliable() const noexcept {
         return Manager != nullptr;
     }
 
-    TSequences GetComputeSequences() {
+    CSequences GetComputeSequences() {
         return Sequences;
     }
 
@@ -27,7 +27,7 @@ public:
 private:
     KomputeManagerHolder Manager;
 
-    TSequences Sequences;
+    CSequences Sequences;
 };
 
 }

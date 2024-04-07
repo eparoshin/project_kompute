@@ -1,8 +1,5 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-#include <vector>
 #include "shaders/NormalDerivative0.comp.spv.hpp"
 #include "shaders/NormalDerivative1.comp.spv.hpp"
 #include "shaders/NormalDerivative2.comp.spv.hpp"
@@ -16,58 +13,58 @@
 namespace NComputeFunctions {
 
 template <int64_t derivative>
-struct TNormal;
+struct CNormal;
 
 template <>
-struct TNormal<0> {
-    static TSpirvProgrammConstRef Get() {
+struct CNormal<0> {
+    static CSpirvProgrammConstRef Get() {
         return NNormalDerivative0::SpirvRawData;
     }
 };
 
 template <>
-struct TNormal<1> {
-    static TSpirvProgrammConstRef Get() {
+struct CNormal<1> {
+    static CSpirvProgrammConstRef Get() {
         return NNormalDerivative1::SpirvRawData;
     }
 };
 
 template <>
-struct TNormal<2> {
-    static TSpirvProgrammConstRef Get() {
+struct CNormal<2> {
+    static CSpirvProgrammConstRef Get() {
         return NNormalDerivative2::SpirvRawData;
     }
 };
 
 template <int64_t derivative>
-struct TMaxwellBoltzmann;
+struct CMaxwellBoltzmann;
 
 template <>
-struct TMaxwellBoltzmann<0> {
-    static TSpirvProgrammConstRef Get() {
+struct CMaxwellBoltzmann<0> {
+    static CSpirvProgrammConstRef Get() {
         return NMaxvellBoltzmannDerivative0::SpirvRawData;
     }
 };
 
 template <>
-struct TMaxwellBoltzmann<1> {
-    static TSpirvProgrammConstRef Get() {
+struct CMaxwellBoltzmann<1> {
+    static CSpirvProgrammConstRef Get() {
         return NMaxvellBoltzmannDerivative1::SpirvRawData;
     }
 };
 
 template <int64_t derivative>
-struct TRayleigh;
+struct CRayleigh;
 template <>
-struct TRayleigh<0> {
-    static TSpirvProgrammConstRef Get() {
+struct CRayleigh<0> {
+    static CSpirvProgrammConstRef Get() {
         return NRayleighDerivative0::SpirvRawData;
     }
 };
 
 template <>
-struct TRayleigh<1> {
-    static TSpirvProgrammConstRef Get() {
+struct CRayleigh<1> {
+    static CSpirvProgrammConstRef Get() {
         return NRayleighDerivative1::SpirvRawData;
     }
 };

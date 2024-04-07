@@ -1,7 +1,7 @@
 #include "kompute_manager.h"
 
 namespace NKomputeManager {
-    TKomputeManager::TKomputeManager() {
+    CKomputeManager::CKomputeManager() {
         //TODO choose best device
         //TODO exception handling
         Manager = std::make_unique<kp::Manager>();
