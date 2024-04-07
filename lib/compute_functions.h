@@ -1,12 +1,12 @@
 #pragma once
 
-#include "shaders/NormalDerivative0.comp.spv.hpp"
-#include "shaders/NormalDerivative1.comp.spv.hpp"
-#include "shaders/NormalDerivative2.comp.spv.hpp"
-#include "MaxvellBoltzmannDerivative0.comp.spv.hpp"
-#include "MaxvellBoltzmannDerivative1.comp.spv.hpp"
-#include "RayleighDerivative0.comp.spv.hpp"
-#include "RayleighDerivative1.comp.spv.hpp"
+#include "shaders/NormalDerivative0.comp.spv.h"
+#include "shaders/NormalDerivative1.comp.spv.h"
+#include "shaders/NormalDerivative2.comp.spv.h"
+#include "MaxvellBoltzmannDerivative0.comp.spv.h"
+#include "MaxvellBoltzmannDerivative1.comp.spv.h"
+#include "RayleighDerivative0.comp.spv.h"
+#include "RayleighDerivative1.comp.spv.h"
 
 #include "compute_function.h"
 

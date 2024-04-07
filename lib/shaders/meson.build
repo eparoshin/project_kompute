@@ -20,7 +20,7 @@ generated_hpp_files = []
 
 foreach comp_file : comp_files
     sprv_file = comp_file + '.spv'
-    hpp_file = sprv_file + '.hpp'
+    hpp_file = sprv_file + '.h'
 
     sprv_target = custom_target(
         comp_file + '_spv',
@@ -30,7 +30,7 @@ foreach comp_file : comp_files
     )
 
     hpp_target = custom_target(
-        comp_file + '_hpp',
+        comp_file + '_h',
         input : sprv_target,
         output : hpp_file,
         command : [python, convert_to_header, '@INPUT@', '@OUTPUT@']
