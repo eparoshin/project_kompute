@@ -10,7 +10,7 @@
 
 #include "compute_function.h"
 
-namespace NComputeFunctions {
+namespace NSComputeFunctions {
 
 template <int64_t derivative>
 struct CNormal;
@@ -18,21 +18,21 @@ struct CNormal;
 template <>
 struct CNormal<0> {
     static CSpirvProgrammConstRef Get() {
-        return NNormalDerivative0::SpirvRawData;
+        return NSNormalDerivative0::SpirvRawData;
     }
 };
 
 template <>
 struct CNormal<1> {
     static CSpirvProgrammConstRef Get() {
-        return NNormalDerivative1::SpirvRawData;
+        return NSNormalDerivative1::SpirvRawData;
     }
 };
 
 template <>
 struct CNormal<2> {
     static CSpirvProgrammConstRef Get() {
-        return NNormalDerivative2::SpirvRawData;
+        return NSNormalDerivative2::SpirvRawData;
     }
 };
 
@@ -42,14 +42,14 @@ struct CMaxwellBoltzmann;
 template <>
 struct CMaxwellBoltzmann<0> {
     static CSpirvProgrammConstRef Get() {
-        return NMaxvellBoltzmannDerivative0::SpirvRawData;
+        return NSMaxvellBoltzmannDerivative0::SpirvRawData;
     }
 };
 
 template <>
 struct CMaxwellBoltzmann<1> {
     static CSpirvProgrammConstRef Get() {
-        return NMaxvellBoltzmannDerivative1::SpirvRawData;
+        return NSMaxvellBoltzmannDerivative1::SpirvRawData;
     }
 };
 
@@ -58,14 +58,14 @@ struct CRayleigh;
 template <>
 struct CRayleigh<0> {
     static CSpirvProgrammConstRef Get() {
-        return NRayleighDerivative0::SpirvRawData;
+        return NSRayleighDerivative0::SpirvRawData;
     }
 };
 
 template <>
 struct CRayleigh<1> {
     static CSpirvProgrammConstRef Get() {
-        return NRayleighDerivative1::SpirvRawData;
+        return NSRayleighDerivative1::SpirvRawData;
     }
 };
-}  // namespace NComputeFunctions
+}  // namespace NSComputeFunctions

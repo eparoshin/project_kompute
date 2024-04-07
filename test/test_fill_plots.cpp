@@ -9,22 +9,22 @@ void printvec(const std::vector<double>& vec) {
     std::cerr << std::endl;
 }
 
-using TVectorD = NKomputeDevice::TVectorD;
+using CVectorD = NSKomputeDevice::CVectorD;
 
 int main() {
-    NKomputeDevice::TKomputeDevice device;
+    NSKomputeDevice::CKomputeDevice device;
 
     std::cerr << device.IsAvaliable() << std::endl;
 
-    TVectorD samples = {1, 1, 1, 1, 1};
-    TVectorD x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    CVectorD samples = {1, 1, 1, 1, 1};
+    CVectorD x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
-    TVectorD D0Y0(x.size());
-    TVectorD D1Y0(x.size());
-    TVectorD D0Y1(x.size());
-    TVectorD D1Y1(x.size());
-    TVectorD D0Y2(x.size());
-    TVectorD D1Y2(x.size());
+    CVectorD D0Y0(x.size());
+    CVectorD D1Y0(x.size());
+    CVectorD D0Y1(x.size());
+    CVectorD D1Y1(x.size());
+    CVectorD D0Y2(x.size());
+    CVectorD D1Y2(x.size());
 
     device.FillPlots(samples, x, &D0Y0, &D1Y0, &D0Y1, &D1Y1, &D0Y2, &D1Y2);
 

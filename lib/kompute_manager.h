@@ -2,7 +2,7 @@
 
 #include <kompute/Manager.hpp>
 
-namespace NKomputeManager {
+namespace NSKomputeManager {
 class CKomputeManager {
     using KomputeManagerHolder = std::unique_ptr<kp::Manager>;
     using KomputeManagerPtr = kp::Manager*;

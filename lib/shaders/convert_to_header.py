@@ -14,7 +14,7 @@ with open(outfile, "w") as output:
     output.write("#pragma once\n")
     output.write("#include <vector>\n")
     output.write("#include <cstdint>\n")
-    output.write(f"namespace N{Path(infile).name.split('.')[0]} {{\n")
+    output.write(f"namespace NS{Path(infile).name.split('.')[0]} {{\n")
     output.write("const std::vector<uint32_t> SpirvRawData = {\n")
     output.write(", ".join(map(hex, uint32_data)))
     output.write("};\n")

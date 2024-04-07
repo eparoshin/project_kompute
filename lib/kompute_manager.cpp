@@ -1,6 +1,6 @@
 #include "kompute_manager.h"
 
-namespace NKomputeManager {
+namespace NSKomputeManager {
     CKomputeManager::CKomputeManager() {
         //TODO choose best device
         //TODO exception handling

@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-namespace NComputeFunctions {
+namespace NSComputeFunctions {
 using CDataType = float;
 using CTensorPtr = std::shared_ptr<kp::Tensor>;
 using CSpirvProgramm = std::vector<uint32_t>;
@@ -61,4 +61,4 @@ class CPlotComputeFunction : public kp::OpAlgoDispatch {
     CTensorPtr OutTensor;
     CVectorD* OutVec;
 };
-}  // namespace NComputeFunctions
+}  // namespace NSComputeFunctions

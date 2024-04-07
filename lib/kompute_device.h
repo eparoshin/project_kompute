@@ -12,17 +12,17 @@ class Sequence;
 class Tensor;
 }  // namespace kp
 
-namespace NKomputeDevice {
-using NComputeFunctions::CPlotComputeFunction;
+namespace NSKomputeDevice {
+using NSComputeFunctions::CPlotComputeFunction;
 using CVectorD = std::vector<double>;
-using NKomputeManager::CKomputeManager;
+using NSKomputeManager::CKomputeManager;
 
 class CKomputeDevice {
     using CManagerPtr = std::unique_ptr<kp::Manager>;
     using CSequencePtr = std::shared_ptr<kp::Sequence>;
     using CSequences = std::vector<CSequencePtr>;
-    using CTensorPtr = NComputeFunctions::CTensorPtr;
-    using CTensorsVec = NComputeFunctions::CTensorsVec;
+    using CTensorPtr = NSComputeFunctions::CTensorPtr;
+    using CTensorsVec = NSComputeFunctions::CTensorsVec;
     using CComputeFunctionsVec =
         std::vector<std::shared_ptr<CPlotComputeFunction>>;
     using KomputeManagerHolder = std::unique_ptr<CKomputeManager>;
@@ -53,4 +53,4 @@ class CKomputeDevice {
     CSequencePtr DefaultSequence =
         Sequences.empty() ? nullptr : Sequences.front();
 };
-}  // namespace NKomputeDevice
+}  // namespace NSKomputeDevice

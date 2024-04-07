@@ -7,8 +7,8 @@
 
 #include "compute_functions.h"
 
-namespace NKomputeDevice {
-using CDataType = NComputeFunctions::CDataType;
+namespace NSKomputeDevice {
+using CDataType = NSComputeFunctions::CDataType;
 namespace {
 std::vector<CDataType> convert(const CVectorD& from) {
     return std::vector<CDataType>(from.begin(), from.end());
@@ -30,30 +30,30 @@ void CKomputeDevice::FillPlots(const CVectorD& samples, const CVectorD& x,
     auto samplesTensor = Manager->tensorT(convert(samples));
     auto xTensor = Manager->tensorT(convert(x));
 
-    using namespace NComputeFunctions;
+    using namespace NSComputeFunctions;
 
     const CComputeFunctionsVec functions = {
-        CPlotComputeFunction::CreateComputeFunction<TNormal<0>>(
+        CPlotComputeFunction::CreateComputeFunction<CNormal<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D0Y0),
-        CPlotComputeFunction::CreateComputeFunction<TNormal<1>>(
+        CPlotComputeFunction::CreateComputeFunction<CNormal<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D1Y0),
-        CPlotComputeFunction::CreateComputeFunction<TMaxwellBoltzmann<0>>(
+        CPlotComputeFunction::CreateComputeFunction<CMaxwellBoltzmann<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D0Y1),
-        CPlotComputeFunction::CreateComputeFunction<TMaxwellBoltzmann<1>>(
+        CPlotComputeFunction::CreateComputeFunction<CMaxwellBoltzmann<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D1Y1),
-        CPlotComputeFunction::CreateComputeFunction<TRayleigh<0>>(
+        CPlotComputeFunction::CreateComputeFunction<CRayleigh<0>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D0Y2),
-        CPlotComputeFunction::CreateComputeFunction<TRayleigh<1>>(
+        CPlotComputeFunction::CreateComputeFunction<CRayleigh<1>>(
             samplesTensor, xTensor,
             Manager->tensorT(std::vector<CDataType>(xSize)),
             Manager->algorithm(), D1Y2),
@@ -96,4 +96,4 @@ void CKomputeDevice::ComputeAsync(
 
     FillOutData(computeFunctions);
 }
-}  // namespace NKomputeDevice
+}  // namespace NSKomputeDevice
