@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iostream>
 #include <kompute/Manager.hpp>
-#include <optional>
 
 namespace NSApplication {
 namespace NSCompute {
@@ -58,7 +57,7 @@ class CVulkanGateImpl : protected CVulkanDevices {
         auto devices = getDevices();
         auto bestDevice = *std::max_element(devices.begin(), devices.end());
         Device_ =
-            std::make_optional<CDevice>(bestDevice.Idx, bestDevice.QueueIdx);
+            std::make_unique<CDevice>(bestDevice.Idx, bestDevice.QueueIdx);
 
         for (uint32_t idx : bestDevice.QueueIdx) {
             Sequences_.push_back(Device_->sequence(idx));
@@ -77,7 +76,8 @@ class CVulkanGateImpl : protected CVulkanDevices {
     CDevice* operator->() { return &*Device_; }
 
    private:
-    std::optional<CDevice> Device_;
+    //CDevice падает если аллоцировать его на стеке, разобраться почему
+    std::unique_ptr<CDevice> Device_;
 
     CSharedSequences Sequences_;
     CSharedSequence DefaultSequence_;
