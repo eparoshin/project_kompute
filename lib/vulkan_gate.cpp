@@ -76,7 +76,7 @@ class CVulkanGateImpl : protected CVulkanDevices {
     CDevice* operator->() { return &*Device_; }
 
    private:
-    //CDevice падает если аллоцировать его на стеке, разобраться почему
+    // CDevice падает если аллоцировать его на стеке, разобраться почему
     std::unique_ptr<CDevice> Device_;
 
     CSharedSequences Sequences_;
