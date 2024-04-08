@@ -1,7 +1,7 @@
 #pragma once
 
-#include <algorithm>
 #include <functional>
+#include <kompute/Manager.hpp>
 #include <kompute/Algorithm.hpp>
 #include <kompute/Tensor.hpp>
 #include <kompute/operations/OpAlgoDispatch.hpp>
@@ -9,56 +9,95 @@
 #include <memory>
 #include <vector>
 
-namespace NSComputeFunctions {
+namespace NSApplication {
+namespace NSCompute {
+
+class CVulkanGate;
+
 using CDataType = float;
+using CVector = std::vector<CDataType>;
 using CTensorPtr = std::shared_ptr<kp::Tensor>;
 using CSpirvProgramm = std::vector<uint32_t>;
 using CSpirvProgrammConstRef = const CSpirvProgramm&;
 using CSpirvGetFunction = std::function<CSpirvProgrammConstRef()>;
 using CTensorsVec = std::vector<CTensorPtr>;
-using CAlgorithmPtr = std::shared_ptr<kp::Algorithm>;
+using CAlgorithmShared = std::shared_ptr<kp::Algorithm>;
 
 class CPlotComputeFunction : public kp::OpAlgoDispatch {
     using CVectorD = std::vector<double>;
+    using CTensorShared = std::shared_ptr<kp::TensorT<CDataType>>;
+    using CRawShader = std::vector<uint32_t>;
 
-   public:
-    CPlotComputeFunction(CTensorPtr&& means, CTensorPtr&& args,
-                         CTensorPtr&& out, CAlgorithmPtr&& algorithm,
-                         CSpirvGetFunction getSpirv, CVectorD* outVec)
-        : OpAlgoDispatch(algorithm), OutTensor(out), OutVec(outVec) {
-        assert(dynamic_cast<kp::TensorT<CDataType>*>(means.get()) &&
-               "means tensor has incorrect type");
-        assert(dynamic_cast<kp::TensorT<CDataType>*>(args.get()) &&
-               "args tensor has incorrect type");
-        assert(dynamic_cast<kp::TensorT<CDataType>*>(out.get()) &&
-               "out tensor has incorrect type");
+    friend class CFunctionBuilder;
+    friend class CFutureResult;
 
-        assert(args->size() == out->size() && "sizes mismatch");
-        assert(outVec);
-        assert(outVec->size() == args->size() && "out vector wrong size");
+    CPlotComputeFunction(CTensorShared means, CTensorShared args, CTensorShared out,
+                         CAlgorithmShared algorithm,
+                        const CRawShader& shader);
 
-        algorithm->rebuild<>({means, args, out}, getSpirv(),
-                             kp::Workgroup({args->size(), 1, 1}));
+    class CFutureResult {
+        friend class CPlotComputeFunction;
+        CFutureResult(const CPlotComputeFunction& self);
+
+        CFutureResult(CFutureResult&&) = delete;
+        CFutureResult(const CFutureResult&) = delete;
+
+        CFutureResult& operator=(CFutureResult&&) = delete;
+        CFutureResult& operator=(const CFutureResult&) = delete;
+
+       public:
+        CVector returnResult() const;
+
+       private:
+        const CPlotComputeFunction& Self_;
+    };
+
+    CFutureResult GetFuture() const {
+        return CFutureResult(*this);
     }
 
-    template <typename TSpirvGetter>
-    static std::shared_ptr<CPlotComputeFunction> CreateComputeFunction(
-        CTensorPtr means, CTensorPtr args, CTensorPtr out,
-        CAlgorithmPtr algorithm, CVectorD* outVec) {
-        return std::make_shared<CPlotComputeFunction>(
-            std::move(means), std::move(args), std::move(out),
-            std::move(algorithm), TSpirvGetter::Get, outVec);
-    }
-    CTensorPtr GetOutTensor() { return OutTensor; }
-
-    void FillOutVec() {
-        auto* fromBegin = OutTensor->data<CDataType>();
-        auto* fromEnd = fromBegin + OutTensor->size();
-        std::copy(fromBegin, fromEnd, OutVec->begin());
-    }
+    CVector returnResult() const;
 
    private:
-    CTensorPtr OutTensor;
-    CVectorD* OutVec;
+    CTensorShared OutTensor_;
 };
-}  // namespace NSComputeFunctions
+
+class CFunctionBuilder {
+    using CDevice = kp::Manager;
+    using CTensorShared = std::shared_ptr<kp::TensorT<CDataType>>;
+    friend class CVulkanGate;
+
+
+    CFunctionBuilder(CFunctionBuilder&&) = delete;
+    CFunctionBuilder(const CFunctionBuilder&) = delete;
+
+    CFunctionBuilder& operator=(CFunctionBuilder&&) = delete;
+    CFunctionBuilder& operator=(const CFunctionBuilder&) = delete;
+
+    CFunctionBuilder(const CVulkanGate& gate, CDevice& device, const CVector& means, const CVector& args);
+
+
+   public:
+    template <typename TShaderGetter>
+    CPlotComputeFunction::CFutureResult createFunction() {
+        return createFunction(TShaderGetter::Get());
+    }
+
+    void runAll();
+
+   private:
+    using CRawShader = std::vector<uint32_t>;
+    CPlotComputeFunction::CFutureResult createFunction(const CRawShader& shader);
+
+    const CVulkanGate& Gate_;
+    CDevice& Device_;
+
+    CTensorShared Means_;
+    CTensorShared Args_;
+
+    using CSharedFunction = std::shared_ptr<CPlotComputeFunction>;
+    std::vector<CSharedFunction> Functions_;
+};
+}
+}
+

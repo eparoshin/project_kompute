@@ -10,7 +10,8 @@
 
 #include "compute_function.h"
 
-namespace NSComputeFunctions {
+namespace NSApplication {
+namespace NSCompute {
 
 template <int64_t derivative>
 struct CNormal;
@@ -68,4 +69,5 @@ struct CRayleigh<1> {
         return NSRayleighDerivative1::SpirvRawData;
     }
 };
-}  // namespace NSComputeFunctions
+}
+}

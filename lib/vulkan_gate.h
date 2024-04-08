@@ -1,5 +1,8 @@
 #pragma once
 
+#include "sliding_container.h"
+#include "compute_function.h"
+
 #include <cstddef>
 #include <vector>
 #include <memory>
@@ -18,10 +21,6 @@ namespace NSApplication {
 namespace NSCompute {
 
 namespace NSVulkanGateDetails {
-    struct CInstanceDeleter {
-        void operator()(vk::Instance*);
-    };
-
     class CVulkanDevices {
         struct CDevInfo {
             size_t Idx;
@@ -36,7 +35,7 @@ namespace NSVulkanGateDetails {
         CVulkanDevices();
 
        protected:
-        CDevicesInfoContainer GetDevices();
+        CDevicesInfoContainer getDevices() const;
 
        private:
         static CDevInfo fromPhysicalDevice(const vk::PhysicalDevice& device, size_t idx);
@@ -50,7 +49,9 @@ namespace NSVulkanGateDetails {
         using CVulkanGateImpl = NSVulkanGateDetails::CVulkanGateImpl;
         using CUptr = std::unique_ptr<CVulkanGateImpl>;
         using CSharedSequence = std::shared_ptr<kp::Sequence>;
-        using CSharedSequences = std::vector<CSharedSequence>;
+        using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
+        using CDataType = float;
+        using CVector = std::vector<CDataType>;
        public:
         CVulkanGate();
 
@@ -60,6 +61,10 @@ namespace NSVulkanGateDetails {
 
         CSharedSequence getDefaultSequence() const;
         CSharedSequences getSequences() const;
+
+        CFunctionBuilder createFunctionBuilder(const CVector& means, const CVector args);
+
+
        private:
         CUptr Gate_;
 

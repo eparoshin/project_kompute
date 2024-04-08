@@ -1,6 +1,7 @@
 lib_compute_sources = files([
-    'kompute_device.cpp',
-    'kompute_manager.cpp',
+    'vulkan_gate.cpp',
+    'vulkan_compute_module.cpp',
+    'compute_function.cpp',
 ])
 
 shader_dir = 'shaders'

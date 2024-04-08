@@ -1,4 +1,4 @@
-#include "vulkan_devices.h"
+#include "vulkan_gate.h"
 
 #include <kompute/Manager.hpp>
 
@@ -22,6 +22,10 @@ namespace {
         } else {
             return QueueIdx.size() < other.QueueIdx.size();
         }
+    }
+
+    CVulkanDevices::CDevicesInfoContainer CVulkanDevices::getDevices() const {
+        return Devices_;
     }
 
     CVulkanDevices::CDevInfo CVulkanDevices::fromPhysicalDevice(const vk::PhysicalDevice& device, size_t idx) {
@@ -50,10 +54,10 @@ namespace {
         using CDevice = kp::Manager;
         friend class CVulkanGate;
         using CSharedSequence = std::shared_ptr<kp::Sequence>;
-        using CSharedSequences = std::vector<CSharedSequence>;
+        using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
        public:
         CVulkanGateImpl() {
-            auto devices = GetDevices();
+            auto devices = getDevices();
             auto bestDevice = *std::max_element(devices.begin(), devices.end());
             Device_ = std::make_optional<CDevice>(bestDevice.Idx, bestDevice.QueueIdx);
 
@@ -73,11 +77,13 @@ namespace {
             return Sequences_;
         }
 
+        CDevice& operator*() {
+            return *Device_;
+        }
        private:
         CDevice* operator->() {
             return &*Device_;
         }
-
        private:
         std::optional<CDevice> Device_;
 
@@ -88,6 +94,8 @@ namespace {
 
 
 }
+    CVulkanGate::~CVulkanGate() = default;
+
     CVulkanGate::CVulkanGate() {
         try {
             Gate_ = std::make_unique<CVulkanGateImpl>();
@@ -107,6 +115,10 @@ namespace {
 
     CVulkanGate::CSharedSequences CVulkanGate::getSequences() const {
         return Gate_->getSequences();
+    }
+
+    CFunctionBuilder CVulkanGate::createFunctionBuilder(const CVector& means, const CVector args) {
+        return CFunctionBuilder(*this, **Gate_, means, args);
     }
 }
 }
