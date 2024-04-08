@@ -1,73 +1,75 @@
 #pragma once
 
-#include "sliding_container.h"
-#include "compute_function.h"
-
 #include <cstddef>
-#include <vector>
 #include <memory>
+#include <vector>
+
+#include "compute_function.h"
+#include "sliding_container.h"
 
 namespace vk {
-    class Instance;
-    class PhysicalDevice;
-}
+class Instance;
+class PhysicalDevice;
+}  // namespace vk
 
 namespace kp {
-    class Manager;
-    class Sequence;
-}
+class Manager;
+class Sequence;
+}  // namespace kp
 
 namespace NSApplication {
 namespace NSCompute {
 
 namespace NSVulkanGateDetails {
-    class CVulkanDevices {
-        struct CDevInfo {
-            size_t Idx;
-            size_t NumProcessors;
-            std::vector<uint32_t> QueueIdx;
+class CVulkanDevices {
+    struct CDevInfo {
+        size_t Idx;
+        size_t NumProcessors;
+        std::vector<uint32_t> QueueIdx;
 
-            bool operator<(const CDevInfo&) const;
-        };
-
-        using CDevicesInfoContainer = std::vector<CDevInfo>;
-       public:
-        CVulkanDevices();
-
-       protected:
-        CDevicesInfoContainer getDevices() const;
-
-       private:
-        static CDevInfo fromPhysicalDevice(const vk::PhysicalDevice& device, size_t idx);
-        CDevicesInfoContainer Devices_;
+        bool operator<(const CDevInfo&) const;
     };
 
-    class CVulkanGateImpl;
+    using CDevicesInfoContainer = std::vector<CDevInfo>;
 
-}
-    class CVulkanGate {
-        using CVulkanGateImpl = NSVulkanGateDetails::CVulkanGateImpl;
-        using CUptr = std::unique_ptr<CVulkanGateImpl>;
-        using CSharedSequence = std::shared_ptr<kp::Sequence>;
-        using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
-        using CDataType = float;
-        using CVector = std::vector<CDataType>;
-       public:
-        CVulkanGate();
+   public:
+    CVulkanDevices();
 
-        ~CVulkanGate();
+   protected:
+    CDevicesInfoContainer getDevices() const;
 
-        bool isAvailable() const;
+   private:
+    static CDevInfo fromPhysicalDevice(const vk::PhysicalDevice& device,
+                                       size_t idx);
+    CDevicesInfoContainer Devices_;
+};
 
-        CSharedSequence getDefaultSequence() const;
-        CSharedSequences getSequences() const;
+class CVulkanGateImpl;
 
-        CFunctionBuilder createFunctionBuilder(const CVector& means, const CVector args);
+}  // namespace NSVulkanGateDetails
+class CVulkanGate {
+    using CVulkanGateImpl = NSVulkanGateDetails::CVulkanGateImpl;
+    using CUptr = std::unique_ptr<CVulkanGateImpl>;
+    using CSharedSequence = std::shared_ptr<kp::Sequence>;
+    using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
+    using CDataType = float;
+    using CVector = std::vector<CDataType>;
 
+   public:
+    CVulkanGate();
 
-       private:
-        CUptr Gate_;
+    ~CVulkanGate();
 
-    };
-}
-}
+    bool isAvailable() const;
+
+    CSharedSequence getDefaultSequence() const;
+    CSharedSequences getSequences() const;
+
+    CFunctionBuilder createFunctionBuilder(const CVector& means,
+                                           const CVector args);
+
+   private:
+    CUptr Gate_;
+};
+}  // namespace NSCompute
+}  // namespace NSApplication

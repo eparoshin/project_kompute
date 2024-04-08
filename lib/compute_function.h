@@ -1,11 +1,10 @@
 #pragma once
 
 #include <functional>
-#include <kompute/Manager.hpp>
 #include <kompute/Algorithm.hpp>
+#include <kompute/Manager.hpp>
 #include <kompute/Tensor.hpp>
 #include <kompute/operations/OpAlgoDispatch.hpp>
-
 #include <memory>
 #include <vector>
 
@@ -31,9 +30,9 @@ class CPlotComputeFunction : public kp::OpAlgoDispatch {
     friend class CFunctionBuilder;
     friend class CFutureResult;
 
-    CPlotComputeFunction(CTensorShared means, CTensorShared args, CTensorShared out,
-                         CAlgorithmShared algorithm,
-                        const CRawShader& shader);
+    CPlotComputeFunction(CTensorShared means, CTensorShared args,
+                         CTensorShared out, CAlgorithmShared algorithm,
+                         const CRawShader& shader);
 
     class CFutureResult {
         friend class CPlotComputeFunction;
@@ -52,9 +51,7 @@ class CPlotComputeFunction : public kp::OpAlgoDispatch {
         const CPlotComputeFunction& Self_;
     };
 
-    CFutureResult GetFuture() const {
-        return CFutureResult(*this);
-    }
+    CFutureResult GetFuture() const { return CFutureResult(*this); }
 
     CVector returnResult() const;
 
@@ -67,15 +64,14 @@ class CFunctionBuilder {
     using CTensorShared = std::shared_ptr<kp::TensorT<CDataType>>;
     friend class CVulkanGate;
 
-
     CFunctionBuilder(CFunctionBuilder&&) = delete;
     CFunctionBuilder(const CFunctionBuilder&) = delete;
 
     CFunctionBuilder& operator=(CFunctionBuilder&&) = delete;
     CFunctionBuilder& operator=(const CFunctionBuilder&) = delete;
 
-    CFunctionBuilder(const CVulkanGate& gate, CDevice& device, const CVector& means, const CVector& args);
-
+    CFunctionBuilder(const CVulkanGate& gate, CDevice& device,
+                     const CVector& means, const CVector& args);
 
    public:
     template <typename TShaderGetter>
@@ -87,7 +83,8 @@ class CFunctionBuilder {
 
    private:
     using CRawShader = std::vector<uint32_t>;
-    CPlotComputeFunction::CFutureResult createFunction(const CRawShader& shader);
+    CPlotComputeFunction::CFutureResult createFunction(
+        const CRawShader& shader);
 
     const CVulkanGate& Gate_;
     CDevice& Device_;
@@ -98,6 +95,5 @@ class CFunctionBuilder {
     using CSharedFunction = std::shared_ptr<CPlotComputeFunction>;
     std::vector<CSharedFunction> Functions_;
 };
-}
-}
-
+}  // namespace NSCompute
+}  // namespace NSApplication

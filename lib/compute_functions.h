@@ -1,14 +1,13 @@
 #pragma once
 
-#include "shaders/NormalDerivative0.comp.spv.h"
-#include "shaders/NormalDerivative1.comp.spv.h"
-#include "shaders/NormalDerivative2.comp.spv.h"
 #include "MaxvellBoltzmannDerivative0.comp.spv.h"
 #include "MaxvellBoltzmannDerivative1.comp.spv.h"
 #include "RayleighDerivative0.comp.spv.h"
 #include "RayleighDerivative1.comp.spv.h"
-
 #include "compute_function.h"
+#include "shaders/NormalDerivative0.comp.spv.h"
+#include "shaders/NormalDerivative1.comp.spv.h"
+#include "shaders/NormalDerivative2.comp.spv.h"
 
 namespace NSApplication {
 namespace NSCompute {
@@ -69,5 +68,5 @@ struct CRayleigh<1> {
         return NSRayleighDerivative1::SpirvRawData;
     }
 };
-}
-}
+}  // namespace NSCompute
+}  // namespace NSApplication

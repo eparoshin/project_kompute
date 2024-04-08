@@ -1,7 +1,8 @@
-#include "lib/vulkan_gate.h"
-#include "lib/vulkan_compute_module.h"
 #include <iostream>
 #include <vector>
+
+#include "lib/vulkan_compute_module.h"
+#include "lib/vulkan_gate.h"
 
 void printvec(const std::vector<double>& vec) {
     for (double elem : vec) {
