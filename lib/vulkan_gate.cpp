@@ -9,11 +9,6 @@ namespace NSApplication {
 namespace NSCompute {
 
 namespace NSVulkanGateDetails {
-namespace {
-std::vector<vk::PhysicalDevice> listDevices() {
-    return kp::Manager().listDevices();
-}
-}  // namespace
 
 bool CVulkanDevices::CDevInfo::operator<(
     const CVulkanDevices::CDevInfo& other) const {
@@ -45,7 +40,8 @@ CVulkanDevices::CDevInfo CVulkanDevices::fromPhysicalDevice(
 }
 
 CVulkanDevices::CVulkanDevices() {
-    auto devices = listDevices();
+    kp::Manager tempManager;
+    auto devices = tempManager.listDevices();
     for (size_t i = 0; i < devices.size(); ++i) {
         Devices_.push_back(fromPhysicalDevice(devices[i], i));
     }
