@@ -14,9 +14,6 @@ void printvec(const std::vector<double>& vec) {
 using CVectorD = std::vector<double>;
 
 int main() {
-    NSApplication::NSCompute::CVulkanGate gate;
-
-    std::cerr << gate.isAvailable() << std::endl;
 
     CVectorD samples = {1, 1, 1, 1, 1};
     CVectorD x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
@@ -28,9 +25,10 @@ int main() {
     CVectorD D0Y2(x.size());
     CVectorD D1Y2(x.size());
 
-    NSApplication::NSCompute::CVulkanCompute compute(gate);
+    NSApplication::NSCompute::CVulkanCompute compute;
+    std::cerr << compute.isAvailable() << std::endl;
 
-    compute.FillPlots(samples, x, &D0Y0, &D1Y0, &D0Y1, &D1Y1, &D0Y2, &D1Y2);
+    compute.fillPlots(samples, x, &D0Y0, &D1Y0, &D0Y1, &D1Y1, &D0Y2, &D1Y2);
 
     printvec(samples);
     printvec(x);

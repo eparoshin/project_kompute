@@ -1,6 +1,6 @@
-#include "lib/vulkan_gate.h"
+#include "lib/vulkan_compute_module.h"
 
 int main() {
-    NSApplication::NSCompute::CVulkanGate gate;
-    gate.isAvailable();
+    NSApplication::NSCompute::CVulkanCompute compute;
+    compute.isAvailable();
 }

@@ -2,7 +2,11 @@
 
 #include <algorithm>
 #include <iostream>
+
 #include <kompute/Manager.hpp>
+#include <kompute/operations/OpTensorSyncDevice.hpp>
+
+#include "compute_function.h"
 
 namespace NSApplication {
 namespace NSCompute {
@@ -48,39 +52,39 @@ CVulkanDevices::CVulkanDevices() {
 
 class CVulkanGateImpl : protected CVulkanDevices {
     using CDevice = kp::Manager;
-    friend class CVulkanGate;
-    using CSharedSequence = std::shared_ptr<kp::Sequence>;
-    using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
+    using CSharedTensor = CVulkanGate::CSharedTensor;
+    using CVector = CVulkanGate::CVector;
 
    public:
     CVulkanGateImpl() {
         auto devices = getDevices();
+        //TODO other way to choose best device
         auto bestDevice = *std::max_element(devices.begin(), devices.end());
         Device_ =
-            std::make_unique<CDevice>(bestDevice.Idx, bestDevice.QueueIdx);
-
-        for (uint32_t idx : bestDevice.QueueIdx) {
-            Sequences_.push_back(Device_->sequence(idx));
-        }
-
-        DefaultSequence_ = Sequences_.front();
+            std::make_unique<CDevice>(bestDevice.Idx);
     }
 
-    CSharedSequence getDefaultSequence() const { return DefaultSequence_; }
+    CSharedTensor createAndSyncTensor(const CVector& vec) {
+        auto tensor = Device_->tensorT(vec);
+        Device_->sequence()->eval<kp::OpTensorSyncDevice>({tensor});
+        return tensor;
+    }
 
-    CSharedSequences getSequences() const { return Sequences_; }
+    CVector callFunction(CPlotComputeFunction& func, CSharedTensor args) {
+        CVector outData;
+        outData.resize(args->size());
 
-    CDevice& operator*() { return *Device_; }
+        auto functionCallOp = func.getFunctionCallOp(Device_->algorithm(), args, Device_->tensorT(outData));
+        auto syncOutputOp = func.getSyncOutputOp();
+
+        Device_->sequence()
+            ->record(functionCallOp)
+            ->eval(syncOutputOp);
+        return func.getResultVec();
+    }
 
    private:
-    CDevice* operator->() { return &*Device_; }
-
-   private:
-    // CDevice падает если аллоцировать его на стеке, разобраться почему
     std::unique_ptr<CDevice> Device_;
-
-    CSharedSequences Sequences_;
-    CSharedSequence DefaultSequence_;
 };
 
 }  // namespace NSVulkanGateDetails
@@ -97,17 +101,14 @@ CVulkanGate::CVulkanGate() {
 
 bool CVulkanGate::isAvailable() const { return Gate_ != nullptr; }
 
-CVulkanGate::CSharedSequence CVulkanGate::getDefaultSequence() const {
-    return Gate_->getDefaultSequence();
+CVulkanGate::CSharedTensor CVulkanGate::createAndSyncTensor(const CVector& vec) {
+    return Gate_->createAndSyncTensor(vec);
 }
 
-CVulkanGate::CSharedSequences CVulkanGate::getSequences() const {
-    return Gate_->getSequences();
+CVulkanGate::CVector CVulkanGate::callFunction(CPlotComputeFunction& func, CSharedTensor args) {
+    return Gate_->callFunction(func, args);
 }
 
-CFunctionBuilder CVulkanGate::createFunctionBuilder(const CVector& means,
-                                                    const CVector args) {
-    return CFunctionBuilder(*this, **Gate_, means, args);
-}
+
 }  // namespace NSCompute
 }  // namespace NSApplication

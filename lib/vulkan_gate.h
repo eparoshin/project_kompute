@@ -4,9 +4,6 @@
 #include <memory>
 #include <vector>
 
-#include "compute_function.h"
-#include "sliding_container.h"
-
 namespace vk {
 class Instance;
 class PhysicalDevice;
@@ -14,7 +11,8 @@ class PhysicalDevice;
 
 namespace kp {
 class Manager;
-class Sequence;
+template <typename T>
+class TensorT;
 }  // namespace kp
 
 namespace NSApplication {
@@ -47,26 +45,27 @@ class CVulkanDevices {
 class CVulkanGateImpl;
 
 }  // namespace NSVulkanGateDetails
+
+class CPlotComputeFunction;
+
 class CVulkanGate {
     using CVulkanGateImpl = NSVulkanGateDetails::CVulkanGateImpl;
     using CUptr = std::unique_ptr<CVulkanGateImpl>;
-    using CSharedSequence = std::shared_ptr<kp::Sequence>;
-    using CSharedSequences = NSUtil::CSlidingContainer<CSharedSequence>;
     using CDataType = float;
-    using CVector = std::vector<CDataType>;
 
    public:
+    using CVector = std::vector<CDataType>;
+    using CSharedTensor = std::shared_ptr<kp::TensorT<CDataType>>;
+
     CVulkanGate();
 
     ~CVulkanGate();
 
     bool isAvailable() const;
 
-    CSharedSequence getDefaultSequence() const;
-    CSharedSequences getSequences() const;
+    CSharedTensor createAndSyncTensor(const CVector& vec);
 
-    CFunctionBuilder createFunctionBuilder(const CVector& means,
-                                           const CVector args);
+    CVector callFunction(CPlotComputeFunction& func, CSharedTensor args);
 
    private:
     CUptr Gate_;

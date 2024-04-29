@@ -1,39 +1,48 @@
 #include "vulkan_compute_module.h"
 
 #include "compute_functions.h"
+#include "compute_function.h"
 
 namespace NSApplication {
 namespace NSCompute {
 namespace {
-using CVectorD = std::vector<double>;
-CVectorD convert(const CVector& vec) {
-    return CVectorD(vec.begin(), vec.end());
+CVulkanCompute::CVectorD convert(const CVulkanGate::CVector& vec) {
+    return CVulkanCompute::CVectorD(vec.begin(), vec.end());
+}
+
+CVulkanGate::CVector convert(const CVulkanCompute::CVectorD& vec) {
+    return CVulkanGate::CVector(vec.begin(), vec.end());
 }
 }  // namespace
-CVulkanCompute::CVulkanCompute(CVulkanGate& gate) : Gate_(gate) {}
 
-void CVulkanCompute::FillPlots(const CVectorD& samples, const CVectorD& x,
+CVulkanCompute::CVulkanCompute() {
+}
+
+bool CVulkanCompute::isAvailable() const {
+    return Gate_.isAvailable();
+}
+
+void CVulkanCompute::fillPlots(const CVectorD& samples, const CVectorD& x,
                                CVectorD* D0Y0, CVectorD* D1Y0, CVectorD* D0Y1,
                                CVectorD* D1Y1, CVectorD* D0Y2, CVectorD* D1Y2) {
-    std::vector<CDataType> means(samples.begin(), samples.end());
-    std::vector<CDataType> args(x.begin(), x.end());
-    auto builder = Gate_.createFunctionBuilder(means, args);
 
-    auto normal0F = builder.createFunction<CNormal<0>>();
-    auto normal1F = builder.createFunction<CNormal<1>>();
-    auto maxBolt0F = builder.createFunction<CMaxwellBoltzmann<0>>();
-    auto maxBolt1F = builder.createFunction<CMaxwellBoltzmann<1>>();
-    auto rayleigh0F = builder.createFunction<CRayleigh<0>>();
-    auto rayleigh1F = builder.createFunction<CRayleigh<1>>();
+    auto means = Gate_.createAndSyncTensor(convert(samples));
+    auto args = Gate_.createAndSyncTensor(convert(x));
 
-    builder.runAll();
 
-    *D0Y0 = convert(normal0F.returnResult());
-    *D1Y0 = convert(normal1F.returnResult());
-    *D0Y1 = convert(maxBolt0F.returnResult());
-    *D1Y1 = convert(maxBolt1F.returnResult());
-    *D0Y2 = convert(rayleigh0F.returnResult());
-    *D1Y2 = convert(rayleigh1F.returnResult());
+    auto normal0F = CPlotComputeFunction::create<CNormal<0>>(means);
+    auto normal1F = CPlotComputeFunction::create<CNormal<1>>(means);
+    auto maxBolt0F = CPlotComputeFunction::create<CMaxwellBoltzmann<0>>(means);
+    auto maxBolt1F = CPlotComputeFunction::create<CMaxwellBoltzmann<1>>(means);
+    auto rayleigh0F = CPlotComputeFunction::create<CRayleigh<0>>(means);
+    auto rayleigh1F = CPlotComputeFunction::create<CRayleigh<1>>(means);
+
+    *D0Y0 = convert(Gate_.callFunction(normal0F, args));
+    *D1Y0 = convert(Gate_.callFunction(normal1F, args));
+    *D0Y1 = convert(Gate_.callFunction(maxBolt0F, args));
+    *D1Y1 = convert(Gate_.callFunction(maxBolt1F, args));
+    *D0Y2 = convert(Gate_.callFunction(rayleigh0F, args));
+    *D1Y2 = convert(Gate_.callFunction(rayleigh1F, args));
 }
 
 }  // namespace NSCompute
