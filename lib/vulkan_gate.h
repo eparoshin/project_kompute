@@ -63,9 +63,9 @@ class CVulkanGate {
 
     bool isAvailable() const;
 
-    CSharedTensor createAndSyncTensor(const CVector& vec);
+    CSharedTensor copyToDevice(CVector&& vec);
 
-    CVector callFunction(CPlotComputeFunction& func, CSharedTensor args);
+    CVector callFunction(const CPlotComputeFunction& func, CSharedTensor args);
 
    private:
     CUptr Gate_;

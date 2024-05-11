@@ -13,21 +13,12 @@ CPlotComputeFunction::CPlotComputeFunction(CShaderGetter getter, CSharedTensor m
         , Means_(std::move(means)) {
 }
 
-CPlotComputeFunction::CSharedOp CPlotComputeFunction::getFunctionCallOp(CSharedAlgorithm algorithm, CSharedTensor args, CSharedTensor out) {
-    Args_ = std::move(args);
-    Out_ = std::move(out);
-
-    algorithm->rebuild<>({Means_, Args_, Out_}, Getter_(), kp::Workgroup({Args_->size(), 1, 1}));
-
-    return std::make_shared<kp::OpAlgoDispatch>(algorithm);
+const CPlotComputeFunction::CShaderCode& CPlotComputeFunction::code() const {
+    return Getter_();
 }
 
-CPlotComputeFunction::CSharedOp CPlotComputeFunction::getSyncOutputOp() {
-    return std::make_shared<kp::OpTensorSyncLocal>(std::vector<std::shared_ptr<kp::Tensor>>{Out_});
-}
-
-CPlotComputeFunction::CVector CPlotComputeFunction::getResultVec() {
-    return Out_->vector();
+CPlotComputeFunction::CSharedTensor CPlotComputeFunction::means() const {
+    return Means_;
 }
 
 }  // namespace NSCompute

@@ -27,21 +27,15 @@ class CPlotComputeFunction {
         return CPlotComputeFunction(TShader::Get, std::move(means));
     }
 
+    const CShaderCode& code() const;
+
+    CSharedTensor means() const;
+
    private:
-    friend class NSVulkanGateDetails::CVulkanGateImpl;
-
-    CSharedOp getFunctionCallOp(CSharedAlgorithm algorithm, CSharedTensor args, CSharedTensor out);
-
-    CSharedOp getSyncOutputOp();
-
-    CVector getResultVec();
-
     CPlotComputeFunction(CShaderGetter getter, CSharedTensor means);
 
     CShaderGetter Getter_;
     CSharedTensor Means_;
-    CSharedTensor Args_;
-    CSharedTensor Out_;
 };
 
 }  // namespace NSCompute

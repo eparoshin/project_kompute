@@ -26,8 +26,8 @@ void CVulkanCompute::fillPlots(const CVectorD& samples, const CVectorD& x,
                                CVectorD* D0Y0, CVectorD* D1Y0, CVectorD* D0Y1,
                                CVectorD* D1Y1, CVectorD* D0Y2, CVectorD* D1Y2) {
 
-    auto means = Gate_.createAndSyncTensor(convert(samples));
-    auto args = Gate_.createAndSyncTensor(convert(x));
+    auto means = Gate_.copyToDevice(convert(samples));
+    auto args = Gate_.copyToDevice(convert(x));
 
 
     auto normal0F = CPlotComputeFunction::create<CNormal<0>>(means);

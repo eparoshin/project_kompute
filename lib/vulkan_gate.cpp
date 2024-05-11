@@ -5,6 +5,7 @@
 
 #include <kompute/Manager.hpp>
 #include <kompute/operations/OpTensorSyncDevice.hpp>
+#include <kompute/operations/OpTensorSyncLocal.hpp>
 
 #include "compute_function.h"
 
@@ -12,6 +13,10 @@ namespace NSApplication {
 namespace NSCompute {
 
 namespace NSVulkanGateDetails {
+
+static kp::Workgroup shape(const CVulkanGate::CSharedTensor& args) {
+    return kp::Workgroup({args->size(), 1, 1});
+}
 
 bool CVulkanDevices::CDevInfo::operator<(
     const CVulkanDevices::CDevInfo& other) const {
@@ -64,23 +69,25 @@ class CVulkanGateImpl : protected CVulkanDevices {
             std::make_unique<CDevice>(bestDevice.Idx);
     }
 
-    CSharedTensor createAndSyncTensor(const CVector& vec) {
-        auto tensor = Device_->tensorT(vec);
+    CSharedTensor copyToDevice(CVector&& vec) {
+        auto tensor = Device_->tensorT(std::move(vec));
         Device_->sequence()->eval<kp::OpTensorSyncDevice>({tensor});
         return tensor;
     }
 
-    CVector callFunction(CPlotComputeFunction& func, CSharedTensor args) {
-        CVector outData;
-        outData.resize(args->size());
+    CVector callFunction(const CPlotComputeFunction& func, CSharedTensor args) {
+        auto out = Device_->tensorT(CVector(args->size()));
 
-        auto functionCallOp = func.getFunctionCallOp(Device_->algorithm(), args, Device_->tensorT(outData));
-        auto syncOutputOp = func.getSyncOutputOp();
+        auto algorithm = Device_->algorithm();
+        algorithm->rebuild<>({func.means(), args, out}, func.code(), shape(args));
+        auto functionCallOp = std::make_shared<kp::OpAlgoDispatch>(algorithm);
+        auto syncOutputOp = std::make_shared<kp::OpTensorSyncLocal>(std::vector<std::shared_ptr<kp::Tensor>>{out});
 
         Device_->sequence()
             ->record(functionCallOp)
             ->eval(syncOutputOp);
-        return func.getResultVec();
+
+        return out->vector();
     }
 
    private:
@@ -101,8 +108,8 @@ CVulkanGate::CVulkanGate() {
 
 bool CVulkanGate::isAvailable() const { return Gate_ != nullptr; }
 
-CVulkanGate::CSharedTensor CVulkanGate::createAndSyncTensor(const CVector& vec) {
-    return Gate_->createAndSyncTensor(vec);
+CVulkanGate::CSharedTensor CVulkanGate::copyToDevice(CVector&& vec) {
+    return Gate_->copyToDevice(std::move(vec));
 }
 
 CVulkanGate::CVector CVulkanGate::callFunction(CPlotComputeFunction& func, CSharedTensor args) {
