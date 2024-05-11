@@ -112,7 +112,7 @@ CVulkanGate::CSharedTensor CVulkanGate::copyToDevice(CVector&& vec) {
     return Gate_->copyToDevice(std::move(vec));
 }
 
-CVulkanGate::CVector CVulkanGate::callFunction(CPlotComputeFunction& func, CSharedTensor args) {
+CVulkanGate::CVector CVulkanGate::callFunction(const CPlotComputeFunction& func, CSharedTensor args) {
     return Gate_->callFunction(func, args);
 }
 
