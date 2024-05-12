@@ -85,7 +85,7 @@ class CVulkanGateImpl : protected CVulkanDevices {
 
         Device_->sequence()
             ->record(functionCallOp)
-            ->eval(syncOutputOp);
+            ->record(syncOutputOp)->eval();
 
         return out->vector();
     }

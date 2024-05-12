@@ -14,8 +14,8 @@ void printvec(const std::vector<double>& vec) {
 using CVectorD = std::vector<double>;
 
 void fillPlots(size_t n, NSApplication::NSCompute::CVulkanCompute& compute) {
-    CVectorD samples(2500, 1);
-    CVectorD x(n, 1);
+    CVectorD samples(n, 1);
+    CVectorD x(2500, 1);
 
     CVectorD D0Y0(x.size());
     CVectorD D1Y0(x.size());

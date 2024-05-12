@@ -18,12 +18,12 @@ using CVectorD = std::vector<double>;
 int main() {
 
 
-    constexpr size_t sz = 2500;
+    constexpr size_t sz = 200000000;
     CVectorD samples(sz, 1);
     CVectorD x;
-    x.reserve(sz);
+    x.reserve(2500);
 
-    for (size_t i = 0; i < sz; ++i) {
+    for (size_t i = 0; i < 2500; ++i) {
         x.push_back(i + 1);
     }
 

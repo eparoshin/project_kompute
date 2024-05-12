@@ -29,7 +29,6 @@ void CVulkanCompute::fillPlots(const CVectorD& samples, const CVectorD& x,
     auto means = Gate_.copyToDevice(convert(samples));
     auto args = Gate_.copyToDevice(convert(x));
 
-
     auto normal0F = CPlotComputeFunction::create<CNormal<0>>(means);
     auto normal1F = CPlotComputeFunction::create<CNormal<1>>(means);
     auto maxBolt0F = CPlotComputeFunction::create<CMaxwellBoltzmann<0>>(means);
