@@ -1,0 +1,37 @@
+#version 460 core
+
+layout(std430, binding = 0) buffer InputMeans {
+    float dataMeans[];
+};
+
+layout(std430, binding = 1) buffer InputArgs {
+    float dataArgs[];
+};
+
+layout(std430, binding = 2) buffer Output {
+    float dataOut[];
+};
+
+const float one_over_sqrt_two_pi = 0.398942280401432702863218082712;
+
+const float four_over_sqrt_pi = 2.2567583341910251477923178062431;
+
+float deviation (in float mean) {
+  return 1. / 10. * mean + 10.;
+}
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+    uint meansLength = dataMeans.length();
+    for (uint meansIdx = 0; meansIdx < meansLength; ++meansIdx) {
+        float mean = dataMeans[meansIdx];
+        float arg = dataArgs[index];
+        float Deviation = deviation(mean);
+        float one_over_div = 1. / Deviation;
+        float arg_minus_mean = arg - mean;
+
+        dataOut[index] += exp(-0.5 * arg_minus_mean * arg_minus_mean * one_over_div * one_over_div) * one_over_div * one_over_sqrt_two_pi;
+    }
+
+    dataOut[index] /= float(meansLength);
+}
